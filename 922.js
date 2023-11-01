@@ -1,76 +1,63 @@
 // 922. Sort Array by Parity II
-// Not yet finished
-
-// [1, 3, 5, 2, 4, 6] -> [1, 2, 3, 4, 5, 6] -> [2, 1, 4, 3, 6, 5]
-// [2, 4, 6, 9, 11, 13]
-let nums1 = [4, 2, 5, 7]; // -> [2, 4, 5, 7] -> [2, 5, 4, 7]
-let nums2 = [2, 3];
+// Tested successfully
 
 
-function findIdxes(nums)
+let nums1 = [4, 2, 5, 7], nums2 = [2, 3];
+let nums3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+function findIdx(nums, startIdx, option="odd")
 {
-    let minOdd = Infinity;
-    let minEven = Infinity;
-    let posOdd = null;
-    let posEven = null;
+    if(option == "odd")
+    {
+        for (let i = startIdx; i < nums.length; i++)
+        {
+            if (nums[i]%2!=0) return [i, nums[i]];
+        }
+        return [null, null];
+    }
 
+    else{
+        for (let i = startIdx; i < nums.length; i++)
+        {
+            if (nums[i]%2==0) return [i, nums[i]];
+        }
+
+        return [null, null];
+    }
+}
+
+function paritySort(nums)
+{
+    let [idx, val] = findIdx(nums, 3, "even")
     for (let i = 0; i < nums.length; i++)
     {
-        if (nums[i]%2==0)
+        if(i%2==0 && nums[i]%2!=0)
         {
-            if(nums[i] < minEven) {
-                minEven = nums[i];
-                posEven = i;
-            }
-        }
-
-        if(nums[i]%2==1)
-        {
-            if(nums[i] < minOdd)
+            let [idx, val] = findIdx(nums, i, "even");
+            if(idx!= null && val != null)
             {
-                minOdd = nums[i];
-                posOdd = i;
+                cache = nums[i];
+                nums[i] = val;
+                nums[idx] = cache;
+            }
+            console.log(idx, val)
+        }
+
+        if(i%2!=0 && nums[i]%2 ==0)
+        {
+            let [idx, val] = findIdx(nums, i, "odd")
+            if(idx != null && val != null)
+            {
+                cache = nums[i];
+                nums[i] = val;
+                nums[idx] = cache;
             }
         }
     }
 
-    return [minEven, posEven, minOdd, posOdd]; 
+    return nums;
 }
 
-
-function sortArraybyParityII(nums, startIdx=0)
-{   
-    if (startIdx == nums.length) return nums;
-
-
-    let [minEven, posEven, minOdd, posOdd] = findIdxes(nums.slice(startIdx, ));
-
-    posEven += startIdx;
-    posOdd += startIdx;
-
-
-    if (posEven != null)
-    {
-        cache1 = nums[startIdx];
-        nums[startIdx] = minEven;
-        nums[posEven] = cache1;
-    }
-
-    if(posOdd != null)
-    {
-        cache2 = nums[startIdx+1];
-        nums[startIdx+1] = minOdd;
-        nums[posOdd] = cache2;
-    }
-
-
-
-    return sortArraybyParityII(nums, startIdx+2)
-}
-
-
-
-// 
-// console.log(findIdxes([1, 2, 3, 4, 5, 6]));
-console.log(sortArraybyParityII([11, 13, 15, 2, 4, 40]));
-// console.log(sortArraybyParityII([1, 2, 3, 4, 5, 6]))
+console.log(paritySort(nums3));
+// console.log(findIdx(nums1, 1, "odd"))
