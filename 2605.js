@@ -1,12 +1,8 @@
 // 2605: Form Smallest Number From Two Digit Arrays
 // Tested successfully
 
+// O(n)
 
-// Algorithm:
-// Step 1: Sort array
-// Step 2: check duplicates 
-// Step 3: If no duplicates, concatenate the two first elements from the 2 arrays
-// Step 4: Else, return that duplicate value
 
 let ex1 = {'nums1': [4, 1, 3], 'nums2': [5, 7]};
 let ex2 = {'nums1': [3, 5, 2, 6], 'nums2': [3, 1, 7]};
@@ -14,18 +10,45 @@ let ex2 = {'nums1': [3, 5, 2, 6], 'nums2': [3, 1, 7]};
 
 function formSmallestNumberFrom2DigitArrays(nums1, nums2)
 {
-    let sorted_nums1 = nums1.sort();
-    let sorted_nums2 = nums2.sort();
+    let min1 = nums1[0];
+    let min2 = nums2[0];
+    let length1 = nums1.length;
+    let length2 = nums2.length;
+    let idx1 = 0; 
+    let idx2 = 0;
 
-    for (let i = 0; i < sorted_nums1.length; i++)
+    let dict1 = {};
+    let dict2 = {};
+    while(true)
     {
-        for (let j = 0; j < sorted_nums2.length; j++)
+        if(idx2<length2)
         {
-            if(sorted_nums1[i] == sorted_nums2[j]) return sorted_nums1[i];
+            if(nums2[idx2] < min2) min2 = nums2[idx2];
+            if(dict2[nums2[idx2]] == null) dict2[nums2[idx2]] = "";
+            idx2++;
         }
+
+        if(idx1<length1)
+        {
+            if(nums1[idx1] < min1) min1 = nums1[idx1];
+            if(dict1[nums1[idx1]] == null) dict1[nums1[idx1]] = "";
+            idx1++;
+        }
+        if(idx1 >= length1 && idx2 >= length2) break;
     }
 
-    return parseInt(sorted_nums1[0].toString() + sorted_nums2[0].toString())
+    let min = Infinity;
+    for (key of Object.keys(dict1))
+    {
+        if(dict2[key] != null && parseInt(key) < min) min = parseInt(key);
+    }
+
+    let rivalMin = null;
+    if(min1 > min2) rivalMin =  min2*10 + min1;
+    else rivalMin = min1*10+min2;
+    if(min < rivalMin) return min;
+    return rivalMin;
+    
 }
 
 console.log(formSmallestNumberFrom2DigitArrays(ex1['nums1'], ex1['nums2']));
